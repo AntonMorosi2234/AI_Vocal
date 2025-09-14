@@ -129,7 +129,8 @@ elif "musica" in user_input:
 
 ---
 
-✍️ **Autore:** progetto dimostrativo creato per sperimentare un assistente vocale offline in italiano.
+✍️ **Autore:** Anton Morosi
+
 
 ---
 
