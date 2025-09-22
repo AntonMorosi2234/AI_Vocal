@@ -1,136 +1,208 @@
-#AI VOCAL
+
 ---
 
-# 📢 Chatbot Vocale Offline in Italiano
+# 🎙️ AI Vocal — Predizione & Chat Vocale con Machine Learning
 
-Un semplice chatbot vocale **offline** in italiano.
-Funziona senza API esterne (quindi senza costi o limiti), usando:
+Un progetto Python che combina **Machine Learning**, **API REST**, **CLI** e **Chat Vocale AI**.
+Allenato su un dataset sintetico (età, stipendio, esperienza) con modello **Logistic Regression**.
 
-* 🎙️ **SpeechRecognition** → per ascoltare la voce e trascriverla (Google STT gratuito).
-* 🗣️ **pyttsx3** → per sintetizzare voce in italiano (voce del sistema operativo).
-* 📚 **responses.py** → archivio di risposte divise per categorie.
-* 🤖 **main\_chatbot.py** → programma principale che gestisce microfono, logica e conversazione.
+---
+
+## ✨ Funzionalità principali
+
+* 📊 **Predizione acquisto** in base a:
+
+  * Età
+  * Stipendio
+  * Anni di esperienza
+* 🖥️ **CLI**:
+
+  * Addestramento modello
+  * Predizione diretta da terminale
+* 🌐 **API REST (FastAPI)**:
+
+  * Endpoint `/predict` con input JSON
+* 🎤 **Chat Vocale AI**:
+
+  * Input tramite microfono (SpeechRecognition)
+  * Risposte AI con voce sintetizzata (gTTS + pygame)
+* 📂 **Dataset automatico**:
+
+  * Generato e salvato in `dataset.csv`
+  * Modello salvato in `model.joblib`
+
+---
+
+## 🗂️ Architettura del progetto
+
+```mermaid
+graph TD
+    A[Dataset sintetico CSV] --> B[Training Logistic Regression]
+    B -->|Salva| C[model.joblib]
+
+    subgraph CLI
+        D1[python ai_vocal.py train] --> B
+        D2[python ai_vocal.py predict] --> C
+    end
+
+    subgraph API REST
+        E1[FastAPI Server] --> C
+        E2[/predict endpoint] --> C
+    end
+
+    subgraph Voice Chat
+        F1[Microfono 🎤] --> F2[SpeechRecognition]
+        F2 --> F3[OpenAI GPT]
+        F3 --> F4[gTTS + pygame 🔊]
+    end
+```
+
+---
+
+## 📦 Installazione
+
+### 1. Clona il progetto
+
+```bash
+git clone https://github.com/tuonome/ai_vocal.git
+cd ai_vocal
+```
+
+### 2. Crea un virtual environment
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Linux/macOS
+.venv\Scripts\activate      # Windows
+```
+
+### 3. Installa le dipendenze
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configura OpenAI API Key
+
+Crea un file `.env` nella root:
+
+```ini
+OPENAI_API_KEY=la_tua_chiave_api
+```
+
+---
+
+## 🚀 Utilizzo
+
+### 🔹 1. Addestramento modello
+
+```bash
+python ai_vocal.py train
+```
+
+### 🔹 2. Predizione da CLI
+
+```bash
+python ai_vocal.py predict --eta 44 --stipendio 4600 --esperienza 18
+```
+
+Output:
+
+```
+🔮 Predizione: Sì (compra) — Probabilità 72.5%
+```
+
+### 🔹 3. API REST
+
+Avvia server:
+
+```bash
+python ai_vocal.py serve --host 0.0.0.0 --port 8000
+```
+
+Richiesta:
+
+```http
+POST /predict
+Content-Type: application/json
+{
+  "eta": 44,
+  "stipendio": 4600,
+  "esperienza": 18
+}
+```
+
+Risposta:
+
+```json
+{
+  "prediction": 1,
+  "probability": 0.725
+}
+```
+
+### 🔹 4. Chat Vocale AI
+
+Esegui senza argomenti:
+
+```bash
+python ai_vocal.py
+```
+
+* Parla 🎤
+* L’AI risponde 🔊
+* Esci dicendo **"exit"**
+
+---
+
+## ⚙️ Requisiti extra
+
+Su **Windows**:
+
+```bash
+pip install pipwin
+pipwin install pyaudio
+```
+
+Su **Linux/macOS**:
+
+```bash
+sudo apt-get install portaudio19-dev
+pip install pyaudio
+```
 
 ---
 
 ## 📂 Struttura progetto
 
 ```
-chatbot_offline/
-│
-├── main_chatbot.py     # programma principale
-├── responses.py        # archivio frasi (stile dizionario)
-└── README.md           # questo file
+ai_vocal/
+│── ai_vocal.py        # Script principale
+│── dataset.csv        # Dataset generato
+│── model.joblib       # Modello ML salvato
+│── requirements.txt   # Dipendenze
+│── README.md          # Documentazione
+│── .env               # Chiave API OpenAI
 ```
 
 ---
 
-## ⚙️ Installazione
+## 🛠️ Tecnologie usate
 
-1. Clona o scarica questa cartella.
-2. Assicurati di avere **Python 3.9+** installato.
-3. Installa le dipendenze:
-
-```bash
-pip install SpeechRecognition pyttsx3 pyaudio
-```
-
-⚠️ Nota:
-
-* Su Windows, se `pyaudio` dà errore, scarica la [ruota già compilata](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio) e installala con `pip install nomefile.whl`.
-* Su Linux potrebbe essere necessario installare anche `portaudio`:
-
-  ```bash
-  sudo apt-get install portaudio19-dev
-  ```
+* [Python 3.10+](https://www.python.org/)
+* [scikit-learn](https://scikit-learn.org/)
+* [FastAPI](https://fastapi.tiangolo.com/)
+* [SpeechRecognition](https://pypi.org/project/SpeechRecognition/)
+* [OpenAI](https://platform.openai.com/)
+* [gTTS](https://pypi.org/project/gTTS/)
+* [pygame](https://www.pygame.org/)
 
 ---
 
-## ▶️ Avvio
+## 📜 Licenza
 
-Nella cartella del progetto esegui:
-
-```bash
-python main_chatbot.py
-```
+MIT License © 2025 — *Anton Morosi*
 
 ---
 
-## 🧑‍💻 Utilizzo
-
-* Quando appare il messaggio **🎙️ Parla ora...**, puoi parlare al microfono.
-* Il chatbot riconosce parole chiave e risponde con frasi prelevate da `responses.py`.
-* Per chiudere la conversazione, puoi dire **"esci"**, **"stop"** o **"basta"**.
-
----
-
-## ✨ Funzionalità
-
-* ✅ Saluti e frasi di cortesia
-* ✅ Risposte su tempo/meteo (simboliche)
-* ✅ Barzellette
-* ✅ Curiosità
-* ✅ Frasi motivazionali
-* ✅ Proverbi italiani
-* ✅ Indovinelli semplici
-* ✅ Archivio frasi separato in `responses.py` (facile da ampliare)
-
----
-
-## 📚 Come aggiungere nuove frasi
-
-Apri `responses.py` e aggiungi nuove categorie o nuove frasi.
-Esempio:
-
-```python
-RESPONSES = {
-    "saluti": [
-        "Ciao! Come stai?",
-        "Bentornato, amico!"
-    ],
-    "musica": [
-        "Adoro la musica! Qual è la tua canzone preferita?",
-        "La musica rende la vita più bella."
-    ]
-}
-```
-
-Poi aggiorna `main_chatbot.py` per gestire la nuova categoria:
-
-```python
-elif "musica" in user_input:
-    return get_response("musica")
-```
-
----
-
-## 📌 Esempio di conversazione
-
-```
-🎤 Chatbot vocale offline in Italiano (di' 'esci' per chiudere)
-🎙️ Parla ora...
-🧑 Tu: ciao
-🤖 AI: Salve! Che piacere sentirti!
-🎙️ Parla ora...
-🧑 Tu: raccontami una barzelletta
-🤖 AI: Sai cosa fa un pomodoro timido? Diventa rosso.
-🎙️ Parla ora...
-🧑 Tu: esci
-🤖 AI: Arrivederci, alla prossima!
-```
-
----
-
-## 🔮 Idee future
-
-* Integrazione con **Vosk** per riconoscimento vocale offline.
-* Aggiunta di un file **JSON esterno** per le risposte (modificabile senza toccare il codice).
-* Uso di un piccolo modello NLP open-source per risposte più naturali.
-
----
-
-✍️ **Autore:** Anton Morosi
-
-
----
 
